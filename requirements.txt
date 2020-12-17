@@ -1,1 +1,4 @@
 flask==1.1.2
+nltk==3.5
+msgpack==1.0.1
+pymorphy2==0.9.1
