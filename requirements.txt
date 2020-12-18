@@ -2,3 +2,6 @@ flask==1.1.2
 nltk==3.5
 msgpack==1.0.1
 pymorphy2==0.9.1
+gensim==3.8.3
+hnswlib==0.4.0
+numpy==1.19.4
