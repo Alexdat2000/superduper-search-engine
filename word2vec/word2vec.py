@@ -16,6 +16,7 @@ class Word2Vec:
         self._model.build_vocab(tokenizer.token_generator(), progress_per=1000)
 
     def train(self, tokenizer, epochs):
+        print("training model (% epochs)...".format(epochs))
         items_count = sum([1 for _ in tokenizer.generator_from_msgpack()])
         self._model.train(tokenizer.token_generator(epochs),
                           total_examples=items_count * epochs,
@@ -50,10 +51,12 @@ class Word2Vec:
         self._hnsw.set_ef(300)
 
     def build_and_train(self, tokenizer, documents, epochs=1):
+        print("building model...")
         self.build_model(tokenizer)
         self.train(tokenizer, epochs)
         self._word_to_index = {w: data.index for w, data in self._model.wv.vocab.items()}
         self._index_to_word = {data.index: w for w, data in self._model.wv.vocab.items()}
+        print('preparing hnsw...')
         self.init_document_vectors(documents)
         self.build_hnsw()
         # save_all_data()

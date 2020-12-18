@@ -1,5 +1,7 @@
 from flask import Flask, render_template, send_from_directory
 from flask import request, redirect, make_response
+from word2vec.word2vec import Word2Vec
+from utils.tokenizer import Tokenizer
 
 
 app = Flask(__name__, subdomain_matching=True)
@@ -23,3 +25,8 @@ def favicon():
 
 if __name__ == '__main__':
     app.run()
+    # test for word2vec
+    # tokenizer = Tokenizer(u"samples/search_items_sample.msgpack")
+    # word2vec = Word2Vec()
+    # word2vec.build_and_train(tokenizer, tokenizer.token_generator())
+
