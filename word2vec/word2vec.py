@@ -8,7 +8,7 @@ class Word2Vec:
     def __init__(self):
         self._model = gensim.models.Word2Vec(size=96, min_count=5, max_vocab_size=1000000)
         self._hnsw = 0  # how can i specify the type?
-        self._document_vectors = np.ndarray(shape=(1, 96))  # I don't know the size
+        self._document_vectors = np.ndarray(shape=(1, 96))
         self._word_to_index = dict()
         self._index_to_word = dict()
 
@@ -16,7 +16,7 @@ class Word2Vec:
         self._model.build_vocab(tokenizer.token_generator(), progress_per=1000)
 
     def train(self, tokenizer, epochs):
-        print("training model (% epochs)...".format(epochs))
+        print("training model ({} epochs)...".format(epochs))
         items_count = sum([1 for _ in tokenizer.generator_from_msgpack()])
         self._model.train(tokenizer.token_generator(epochs),
                           total_examples=items_count * epochs,
@@ -50,21 +50,20 @@ class Word2Vec:
         self._hnsw.load_index(file_path)
         self._hnsw.set_ef(300)
 
-    def build_and_train(self, tokenizer, documents, epochs=1):
+    def build_and_train(self, tokenizer, epochs=1):
         print("building model...")
         self.build_model(tokenizer)
         self.train(tokenizer, epochs)
         self._word_to_index = {w: data.index for w, data in self._model.wv.vocab.items()}
         self._index_to_word = {data.index: w for w, data in self._model.wv.vocab.items()}
         print('preparing hnsw...')
-        self.init_document_vectors(documents)
+        self.init_document_vectors(tokenizer.generator_from_msgpack())
         self.build_hnsw()
         # save_all_data()
 
     def init_document_vectors(self, documents):
-        self._document_vectors.reshape((len(documents), 96))
-        for i in range(len(documents)):
-            self._document_vectors[i] = sum(documents[i])
+        document_list = [sum(self._word_to_index[word] for word in document) for document in documents]
+        self._document_vectors = np.array(document_list)
 
     #def save_all_data():
     # save document_vectors, model, hnsw, word_to_index, index_to_word

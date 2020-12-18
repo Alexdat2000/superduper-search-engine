@@ -28,5 +28,5 @@ if __name__ == '__main__':
     # test for word2vec
     # tokenizer = Tokenizer(u"samples/search_items_sample.msgpack")
     # word2vec = Word2Vec()
-    # word2vec.build_and_train(tokenizer, tokenizer.token_generator())
+    # word2vec.build_and_train(tokenizer)
 
