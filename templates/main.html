@@ -10,9 +10,9 @@
     </style>
 </head>
 <div id="cover">
-    <form method="POST" action="/search-request">
+    <form method="GET" action="/search-request">
         <div class="tb">
-            <div class="td"><input type="text" placeholder="Поиск" required></div>
+            <div class="td"><input type="text" placeholder="Поиск" name="q" required></div>
             <div class="td" id="s-cover">
                 <button type="submit">
                     <div id="s-circle"></div>
