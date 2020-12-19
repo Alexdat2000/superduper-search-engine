@@ -2,6 +2,7 @@ import gensim
 import hnswlib
 import numpy as np
 import tqdm
+import pickle
 
 
 class Word2Vec:
@@ -76,9 +77,26 @@ class Word2Vec:
                 document_list.append(np.zeros(96))
         self._document_vectors = np.vstack(document_list)
 
-    def save_all_data(self, path=u'w2v'):
-        self._model.save(path)
-    # save document_vectors, model, hnsw, word_to_index, index_to_word
+    def save(self, file_path='word2vec/'):
+        with open(file_path + 'model.model', 'wb') as model_file:
+          self._model.save(model_file)
+        self._hnsw.save_index(file_path + 'hnsw')
+        with open(file_path + 'ids', 'wb') as ids_file:
+            pickle.dump(self._ids, ids_file)
+        with open(file_path + 'word_to_index', 'wb') as w2i_file:
+            pickle.dump(self._word_to_index, w2i_file)
+        with open(file_path + 'index_to_word', 'wb') as i2w_file:
+            pickle.dump(self._index_to_word, i2w_file)
+
+    def load(self, file_path='word2vec/'):
+        self.load_knn_index(96, file_path + 'hnsw', 'cosine')
+        self._model = gensim.models.Word2Vec.load(file_path + 'model.model')
+        with open(file_path + 'ids', 'rb') as ids_file:
+            self._ids = pickle.load(ids_file)
+        with open(file_path + 'word_to_index', 'rb') as w2i_file:
+            self._word_to_index = pickle.load(w2i_file)
+        with open(file_path + 'index_to_word', 'rb') as i2w_file:
+            self._index_to_word = pickle.load(i2w_file)
 
     def evaluate(self, text, tokenizer, k):
         tokens = tokenizer.tokenize(text)
