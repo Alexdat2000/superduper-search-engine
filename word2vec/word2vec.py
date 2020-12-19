@@ -38,7 +38,7 @@ class Word2Vec:
         data_labels = np.arange(count)
         for batch_start in tqdm.tqdm_notebook(range(0, count, batch_size)):
             self._hnsw.add_items(embeddings[batch_start: batch_start + batch_size, :],
-                        data_labels[batch_start: batch_start + batch_size])
+                                 data_labels[batch_start: batch_start + batch_size])
 
         self._hnsw.set_ef(300)  # ef should always be > k
         self._hnsw.save_index(output_path)
@@ -66,21 +66,25 @@ class Word2Vec:
         tokenizer.reopen(u"/content/drive/MyDrive/ML_SE/search_items_sample.msgpack")
         document_list = []
         for document in tokenizer.generator_from_msgpack():
-          tokens = tokenizer.tokenize(document['content'])
-          self._ids.append(document['item_id'])
-          if tokens:
-            document_list.append(sum(self._model.wv.vectors[self._word_to_index[token]] if self._word_to_index.get(token) else np.zeros(96) for token in tokens))
-          else:
-            document_list.append(np.zeros(96))
+            tokens = tokenizer.tokenize(document['content'])
+            self._ids.append(document['item_id'])
+            if tokens:
+                document_list.append(sum(
+                    self._model.wv.vectors[self._word_to_index[token]] if self._word_to_index.get(token) else np.zeros(
+                        96) for token in tokens))
+            else:
+                document_list.append(np.zeros(96))
         self._document_vectors = np.vstack(document_list)
 
-    def save_all_data(path=u'w2v'):
-      model.save(path)
+    def save_all_data(self, path=u'w2v'):
+        self._model.save(path)
     # save document_vectors, model, hnsw, word_to_index, index_to_word
 
     def evaluate(self, text, tokenizer, k):
         tokens = tokenizer.tokenize(text)
-        query_vector = sum(self._model.wv.vectors[self._word_to_index[token]] if self._word_to_index.get(token) else np.zeros(96) for token in tokens)
+        query_vector = sum(
+            self._model.wv.vectors[self._word_to_index[token]] if self._word_to_index.get(token) else np.zeros(96) for
+            token in tokens)
         indices, scores = self._hnsw.knn_query(query_vector, k=k)
         indices = indices.ravel()
         scores = scores.ravel()
