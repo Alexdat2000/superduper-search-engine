@@ -13,6 +13,11 @@ class Tokenizer:
         self._analyzer = pymorphy2.MorphAnalyzer()
         self._dictionary = dict()
 
+    def reopen(self, filename=u"samples/search_items.msgpack"):
+        self._file.close()
+        self._file = open(filename, 'rb')
+        self._unpacker = msgpack.Unpacker(file_like=self._file)
+
     def normalize_token(self, token):
         result = self._dictionary.get(token)
         if result is None:
@@ -43,4 +48,4 @@ class Tokenizer:
                     print('generating {} '.format(counter2 * print_delta))
                     counter1, counter2 = 0, counter2 + 1
                 if tokens:
-                    yield [self.normalize_token(token) for token in tokens]
+                    yield [token for token in tokens]
