@@ -48,4 +48,4 @@ class Tokenizer:
                     print('generating {} '.format(counter2 * print_delta))
                     counter1, counter2 = 0, counter2 + 1
                 if tokens:
-                    yield [self.normalize_token(token) for token in tokens]
+                    yield tokens
