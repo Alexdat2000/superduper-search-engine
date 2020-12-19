@@ -38,7 +38,7 @@ class Tokenizer:
             result.append(self.normalize_token(w))
         return result
 
-    def token_generator(self, epochs=1, print_delta=200):
+    def token_generator(self, epochs=1, print_delta=2000):
         counter1, counter2 = 0, 1
         for epoch in range(epochs):
             for elem in self.generator_from_msgpack():
@@ -48,4 +48,4 @@ class Tokenizer:
                     print('generating {} '.format(counter2 * print_delta))
                     counter1, counter2 = 0, counter2 + 1
                 if tokens:
-                    yield [token for token in tokens]
+                    yield [self.normalize_token(token) for token in tokens]
