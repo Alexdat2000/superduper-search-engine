@@ -4,16 +4,21 @@ import pymorphy2
 
 
 class Tokenizer:
-    __slots__ = ['_tokenizer', '_unpacker', '_analyzer', '_file']
+    __slots__ = ['_tokenizer', '_unpacker', '_analyzer', '_file', '_dictionary']
 
     def __init__(self, filename=u"samples/search_items.msgpack"):
         self._file = open(filename, 'rb')
         self._unpacker = msgpack.Unpacker(file_like=self._file)
         self._tokenizer = nltk.tokenize.WordPunctTokenizer()
         self._analyzer = pymorphy2.MorphAnalyzer()
+        self._dictionary = dict()
 
     def normalize_token(self, token):
-        return self._analyzer.parse(token)[0].normal_form
+        result = self._dictionary.get(token)
+        if result is None:
+            result = self._analyzer.parse(token)[0].normal_form
+            self._dictionary[token] = result
+        return result
 
     def generator_from_msgpack(self):
         for unpacked in self._unpacker:
