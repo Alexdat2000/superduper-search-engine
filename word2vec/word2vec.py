@@ -57,19 +57,26 @@ class Word2Vec:
         self._word_to_index = {w: data.index for w, data in self._model.wv.vocab.items()}
         self._index_to_word = {data.index: w for w, data in self._model.wv.vocab.items()}
         print('preparing hnsw...')
-        self.init_document_vectors(tokenizer.generator_from_msgpack(), tokenizer)
+        self.init_document_vectors(tokenizer)
         self.build_hnsw()
         # save_all_data()
 
-    def init_document_vectors(self, documents, tokenizer):
-        document_list = [sum(self._word_to_index[tokenizer.normalize_token(word)] for word in document)
-                         for document in documents]
-        self._document_vectors = np.array(document_list)
+    def init_document_vectors(self, tokenizer):
+        tokenizer.reopen(u"/content/drive/MyDrive/ML_SE/search_items_sample.msgpack")
+        document_list = []
+        for document in tokenizer.generator_from_msgpack():
+          tokens = tokenizer.tokenize(document['content'])
+          if tokens:
+            document_list.append(sum(self._model.wv.vectors[self._word_to_index[token]] if self._word_to_index.get(token) else np.zeros(96) for token in tokens))
+          else:
+            document_list.append(np.zeros(96))
+        self._document_vectors = np.vstack(document_list)
 
     #def save_all_data():
     # save document_vectors, model, hnsw, word_to_index, index_to_word
 
     def evaluate(self, text, tokenizer, k):
-        query_vector = sum(self._word_to_index[word] for word in tokenizer.tokenize(text))
+        tokens = tokenizer.tokenize(text)
+        query_vector = sum(self._model.wv.vectors[self._word_to_index[token]] if self._word_to_index.get(token) else np.zeros(96) for token in tokens)
         indices, scores = self._hnsw.knn_query(query_vector, k=k)
         return indices, scores
