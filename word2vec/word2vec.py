@@ -57,12 +57,13 @@ class Word2Vec:
         self._word_to_index = {w: data.index for w, data in self._model.wv.vocab.items()}
         self._index_to_word = {data.index: w for w, data in self._model.wv.vocab.items()}
         print('preparing hnsw...')
-        self.init_document_vectors(tokenizer.generator_from_msgpack())
+        self.init_document_vectors(tokenizer.generator_from_msgpack(), tokenizer)
         self.build_hnsw()
         # save_all_data()
 
-    def init_document_vectors(self, documents):
-        document_list = [sum(self._word_to_index[word] for word in document) for document in documents]
+    def init_document_vectors(self, documents, tokenizer):
+        document_list = [sum(self._word_to_index[tokenizer.normalize_token(word)] for word in document)
+                         for document in documents]
         self._document_vectors = np.array(document_list)
 
     #def save_all_data():
