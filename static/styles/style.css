@@ -50,7 +50,7 @@ input, button
     left: 0;
     right: 0;
     width: 1200px;
-    padding: 35px;
+    padding: 0;
     margin: -83px auto 0 auto;
     background-color: #b03f99;
     border-radius: 20px;
@@ -186,4 +186,30 @@ button span:before, button span:after
   border-radius: 4px;
   box-shadow: 0 10px 20px -5px rgb(188, 67, 159);
   z-index: 125;
+}
+
+#results
+{
+    position: absolute;
+    top: 10%;
+    height: 90%;
+    left: 0;
+    right: 0;
+    width: 1700px;
+    padding: 35px;
+    margin: -200px;
+    background-color: #b05d9e;
+    border-radius: 20px;
+    box-shadow: 0 5px 40px #ac5794, 0 0 0 10px #ffffffeb;
+    transform: scale(0.6);
+}
+
+#text
+{
+    width: 100%;
+    font-size: 100px;
+    line-height: 1;
+    left: 20px;
+    margin: 30px;
+    font-family: Konstanting, sans-serif;
 }
