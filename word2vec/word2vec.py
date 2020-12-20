@@ -64,7 +64,7 @@ class Word2Vec:
         # save_all_data()
 
     def init_document_vectors(self, tokenizer):
-        tokenizer.reopen(u"/content/drive/MyDrive/ML_SE/search_items_sample.msgpack")
+        tokenizer.reopen()
         document_list = []
         for document in tokenizer.generator_from_msgpack():
             tokens = tokenizer.tokenize(document['content'])
@@ -79,7 +79,7 @@ class Word2Vec:
 
     def save(self, file_path='word2vec/'):
         with open(file_path + 'model.model', 'wb') as model_file:
-          self._model.save(model_file)
+            self._model.save(model_file)
         self._hnsw.save_index(file_path + 'hnsw')
         with open(file_path + 'ids', 'wb') as ids_file:
             pickle.dump(self._ids, ids_file)
