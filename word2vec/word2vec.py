@@ -3,7 +3,9 @@ import hnswlib
 import numpy as np
 import tqdm
 import pickle
-
+import zipfile
+import requests
+import io
 
 class Word2Vec:
     def __init__(self):
@@ -97,6 +99,11 @@ class Word2Vec:
             self._word_to_index = pickle.load(w2i_file)
         with open(file_path + 'index_to_word', 'rb') as i2w_file:
             self._index_to_word = pickle.load(i2w_file)
+
+    def load_from_url(self, zip_url):
+        folder = requests.get(zip_url)
+        with folder, zipfile.ZipFile(io.BytesIO(folder.content)) as archive:
+            archive.extractall('/')
 
     def evaluate(self, text, tokenizer, k):
         tokens = tokenizer.tokenize(text)
