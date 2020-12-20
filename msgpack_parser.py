@@ -6,14 +6,14 @@ def main():
     unpacker2 = msgpack.Unpacker(file_like=open(r"Q:\search_items.msgpack", "rb"))
 
     dt = {}
+    dt2 = {}
 
     for i in unpacker:
         dt[i["item_id"]] = i["doc_url"]
 
     for i in unpacker2:
-        x = dt[i["item_id"]]
-        dt[i["item_id"]] = (i["title"], x, i["content"][:120])
-    pickle.dump(dt, open("articles.dump", "wb"))
+        dt2[i["item_id"]] = (i["title"], dt[i["item_id"]], i["content"][:120])
+    pickle.dump(dt2, open("articles.dump", "wb"))
 
 
 main()
