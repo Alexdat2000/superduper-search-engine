@@ -5,15 +5,23 @@
     <meta charset="utf-8">
     <style>
         body {
+            background-attachment: fixed;
             background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("https://picsum.photos/1920/1080");
         }
     </style>
 </head>
 <div id="results">
-    <div id="text">
-        <ol>
-            <li>Result 1</li>
-        </ol>
-    </div>
+    <ol>
+        {% for result in results %}
+        <div class="title">
+        <li>
+            <a href="{{result.url}}">{{result.title}}</a><br>
+            <div class="preview">{{result.preview}}</div><br>
+        </li>
+        </div>
+        {% endfor %}
+    </ol>
+
+</div>
 </div>
 </html>
