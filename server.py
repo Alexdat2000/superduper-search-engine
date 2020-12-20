@@ -3,11 +3,9 @@ from flask import request, redirect, make_response
 import bm25.valuer
 import utils.tokenizer
 
-app = Flask(__name__, subdomain_matching=True)
 id_to_urls = __import__("pickle").load(open("articles.dump", "rb"))
 
-t = utils.tokenizer.Tokenizer('samples/search_items_sample.msgpack')
-v = bm25.valuer.Valuer(t)
+app = Flask(__name__, subdomain_matching=True)
 
 
 @app.route("/")
@@ -44,8 +42,13 @@ def favicon():
 
 
 if __name__ == '__main__':
+    global v, t
     if "LOCAL" not in __import__("os").environ:
         import run_tests
+
         run_tests.run()
 
-    app.run(debug=True)
+    t = utils.tokenizer.Tokenizer('samples/search_items.msgpack')
+    v = bm25.valuer.Valuer(t)
+
+    app.run()
