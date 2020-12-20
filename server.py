@@ -1,9 +1,13 @@
 from flask import Flask, render_template, send_from_directory
 from flask import request, redirect, make_response
-
+import bm25.valuer
+import utils.tokenizer
 
 app = Flask(__name__, subdomain_matching=True)
 id_to_urls = __import__("pickle").load(open("articles.dump", "rb"))
+
+t = utils.tokenizer.Tokenizer('samples/search_items_sample.msgpack')
+v = bm25.valuer.Valuer(t)
 
 
 @app.route("/")
@@ -13,11 +17,7 @@ def main_page():
 
 @app.route("/search-request", methods=["GET"])
 def get_results():
-    res = []  # TODO
-    for i in id_to_urls:
-        res.append(i)
-        if len(res) == 10:
-            break
+    res = v.score(request.args['q'])  # TODO
 
     answer = []
     for id in res:
