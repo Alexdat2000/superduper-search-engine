@@ -5,7 +5,7 @@ import bm25.valuer
 
 def train():
     word2vec = Word2Vec(tokenizer=t, idf=v._idf)
-    word2vec.build_and_train(4)
+    word2vec.build_and_train(10)
     word2vec.save('word2vec/')
 
 
@@ -18,6 +18,6 @@ def run():
 if __name__ == '__main__':
     global v, t
     print('test')
-    t = Tokenizer(u'samples/search_items.msgpack')
+    t = Tokenizer(u'samples/search_items_sample.msgpack')
     v = bm25.valuer.Valuer(t)
     train()

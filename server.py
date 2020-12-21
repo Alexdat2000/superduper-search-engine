@@ -2,6 +2,7 @@ from flask import Flask, render_template, send_from_directory
 from flask import request, redirect, make_response
 import bm25.valuer
 import utils.tokenizer
+from word2vec.word2vec import Word2Vec
 
 id_to_urls = __import__("pickle").load(open("articles.dump", "rb"))
 
@@ -15,7 +16,14 @@ def main_page():
 
 @app.route("/search-request", methods=["GET"])
 def get_results():
-    res = v.score(request.args['q'])
+    res = w2v.evaluate(request.args['q'], 20)[0]  # TODO
+
+    answer = []
+    for id in res:
+        if id not in id_to_urls:
+            print(f"Error: id {id} not in pickle")
+        else:
+            answer.append((id, id_to_urls[id][0], id_to_urls[id][1]))
 
     return render_template(
         "results.html",
@@ -35,13 +43,15 @@ def favicon():
 
 
 if __name__ == '__main__':
-    global v, t
+    global v, t, w2v
     if "LOCAL" not in __import__("os").environ:
         import run_tests
 
-        run_tests.run()
+        #run_tests.run()
 
-    t = utils.tokenizer.Tokenizer('samples/search_items.msgpack')
+    t = utils.tokenizer.Tokenizer('samples/search_items_sample.msgpack')
     v = bm25.valuer.Valuer(t)
+    w2v = Word2Vec(t, v._idf)
+    w2v.load('word2vec/')
 
     app.run()
