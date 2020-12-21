@@ -180,7 +180,7 @@ button span:before, button span:after
   padding: 10px 14px;
   margin: 20px;
   color: #fff;
-  font-family: Konstanting;
+  font-family: Konstanting, sans-serif;
   font-size: 14px;
   text-decoration: none;
   background-color: #ba41a0;
@@ -197,7 +197,6 @@ button span:before, button span:after
     margin-left: 100px;
     margin-right: 100px;
     margin-top: 50px;
-    /*transform: scale(0.6);*/
 }
 
 
@@ -236,4 +235,13 @@ a:visited {
 
 ol {
     color: #f68ef6;
+}
+
+#head {
+    font-size: 60px;
+}
+
+#req {
+    font-family: Konstanting, sans-serif;
+    font-size: 100px;
 }

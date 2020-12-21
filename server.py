@@ -2,13 +2,14 @@ from flask import Flask, render_template, send_from_directory
 from flask import request, redirect, make_response
 import bm25.valuer
 import utils.tokenizer
+import pickle
+
 # from word2vec.word2vec import Word2Vec
 
 id_to_urls = __import__("pickle").load(open("articles.dump", "rb"))
 
 app = Flask(__name__, subdomain_matching=True)
-t = utils.tokenizer.Tokenizer('samples/search_items.msgpack')
-v = bm25.valuer.Valuer(t)
+v = pickle.load(open("valuer.dump", "wb"))
 
 
 @app.route("/")

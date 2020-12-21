@@ -6,18 +6,25 @@ import pymorphy2
 class Tokenizer:
     __slots__ = ['_tokenizer', '_unpacker', '_analyzer', '_file', '_dictionary', '_filename']
 
-    def __init__(self, filename=u"samples/search_items.msgpack"):
-        self._file = open(filename, 'rb')
-        self._unpacker = msgpack.Unpacker(file_like=self._file)
-        self._tokenizer = nltk.tokenize.WordPunctTokenizer()
-        self._analyzer = pymorphy2.MorphAnalyzer()
-        self._dictionary = dict()
-        self._filename = filename
+    def __init__(self, *args):
+        if len(args) <= 1:
+            filename = u"samples/search_items.msgpack" if not args else args[0]
+            self._file = open(filename, 'rb')
+            self._unpacker = msgpack.Unpacker(file_like=self._file)
+            self._tokenizer = nltk.tokenize.WordPunctTokenizer()
+            self._analyzer = pymorphy2.MorphAnalyzer()
+            self._dictionary = dict()
+            self._filename = filename
+        else:
+            self._tokenizer, self._analyzer, self._dictionary = args
 
     def reopen(self):
         self._file.close()
         self._file = open(self._filename, 'rb')
         self._unpacker = msgpack.Unpacker(file_like=self._file)
+
+    def __reduce__(self):
+        return (self.__class__, (self._tokenizer, self._analyzer, self. _dictionary))
 
     def normalize_token(self, token):
         result = self._dictionary.get(token)
