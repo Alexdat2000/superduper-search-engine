@@ -191,19 +191,20 @@ button span:before, button span:after
 
 #results
 {
-    position: absolute;
-    top: 0;
-    margin-top: -40%;
+    position: relative;
     background-color: rgba(175, 37, 196, 0.1);
     border-radius: 5px;
-    transform: scale(0.6);
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-top: 50px;
+    /*transform: scale(0.6);*/
 }
 
 
 #text
 {
     width: 100%;
-    font-size: 100px;
+    font-size: 80px;
     line-height: 1;
     left: 20px;
     margin: 30px;
@@ -217,7 +218,7 @@ button span:before, button span:after
 
 .preview
 {
-    font-size: 40px;
+    font-size: 30px;
     color: #f3b3f3;
 }
 
