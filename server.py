@@ -7,7 +7,7 @@ import utils.tokenizer
 id_to_urls = __import__("pickle").load(open("articles.dump", "rb"))
 
 app = Flask(__name__, subdomain_matching=True)
-t = utils.tokenizer.Tokenizer('samples/search_items_sample.msgpack')
+t = utils.tokenizer.Tokenizer('samples/search_items.msgpack')
 v = bm25.valuer.Valuer(t)
 
 
