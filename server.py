@@ -2,7 +2,7 @@ from flask import Flask, render_template, send_from_directory
 from flask import request, redirect, make_response
 import bm25.valuer
 import utils.tokenizer
-from word2vec.word2vec import Word2Vec
+# from word2vec.word2vec import Word2Vec
 
 id_to_urls = __import__("pickle").load(open("articles.dump", "rb"))
 
@@ -16,7 +16,7 @@ def main_page():
 
 @app.route("/search-request", methods=["GET"])
 def get_results():
-    res = w2v.evaluate(request.args['q'], 20)[0]  # TODO
+    res = v.score(request.args['q'])  # TODO
 
     answer = []
     for id in res:
@@ -44,14 +44,14 @@ def favicon():
 
 if __name__ == '__main__':
     global v, t, w2v
-    if "LOCAL" not in __import__("os").environ:
-        import run_tests
-
-        #run_tests.run()
+    # if "LOCAL" not in __import__("os").environ:
+    #     import run_tests
+    #
+    #     run_tests.run()
 
     t = utils.tokenizer.Tokenizer('samples/search_items_sample.msgpack')
     v = bm25.valuer.Valuer(t)
-    w2v = Word2Vec(t, v._idf)
-    w2v.load('word2vec/')
+    # w2v = Word2Vec(t, v._idf)
+    # w2v.load('word2vec/')
 
     app.run()
