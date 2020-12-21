@@ -32,7 +32,7 @@ class Valuer:
             self._idf[features[i]] = np.log((N - is_in_text[0, i] + 0.5) / (is_in_text[0, i] + 0.5) + 1)
 
     def score(self, query: str):
-        scores = 0
+        scores = np.zeros(self._N, dtype=np.float64)
 
         k1 = self.k1
         b = self.b
