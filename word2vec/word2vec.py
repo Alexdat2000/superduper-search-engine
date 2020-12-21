@@ -14,6 +14,7 @@ class Word2Vec:
         self._idf = idf
         self._tokenizer = tokenizer
         self._vectors = np.array([])
+        self._id_to_index = dict()
 
     def build_model(self):
         self._model.build_vocab(self._tokenizer.token_generator(), progress_per=1000)
@@ -89,19 +90,21 @@ class Word2Vec:
             pickle.dump(self._ids, ids_file)
         with open(file_path + 'word_to_index', 'wb') as w2i_file:
             pickle.dump(self._word_to_index, w2i_file)
-        with open(file_path + 'index_to_word', 'wb') as i2w_file:
-            pickle.dump(self._index_to_word, i2w_file)
+        with open(file_path + 'document_vectors', 'wb') as doc_file:
+            pickle.dump(self._document_vectors, doc_file)
 
     def load(self, file_path='word2vec/'):
         with open(file_path + 'vectors', 'rb') as vec_file:
             self._vectors = pickle.load(vec_file)
-        self.load_knn_index(96, file_path + 'hnsw', 'cosine')
+        #self.load_knn_index(96, file_path + 'hnsw', 'cosine')
         with open(file_path + 'ids', 'rb') as ids_file:
             self._ids = pickle.load(ids_file)
         with open(file_path + 'word_to_index', 'rb') as w2i_file:
             self._word_to_index = pickle.load(w2i_file)
-        with open(file_path + 'index_to_word', 'rb') as i2w_file:
-            self._index_to_word = pickle.load(i2w_file)
+        with open(file_path + 'document_vectors', 'rb') as doc_file:
+            self._document_vectors = pickle.load(doc_file)
+        for i in range(len(self._ids)):
+            self._id_to_index[self._ids[i]] = i
 
     def evaluate(self, text, k):
         tokens = self._tokenizer.tokenize(text)

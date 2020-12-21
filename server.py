@@ -2,14 +2,16 @@ from flask import Flask, render_template, send_from_directory
 from flask import request, redirect, make_response
 import bm25.valuer
 import utils.tokenizer
-import pickle
-
 # from word2vec.word2vec import Word2Vec
 
 id_to_urls = __import__("pickle").load(open("articles.dump", "rb"))
 
 app = Flask(__name__, subdomain_matching=True)
-v = pickle.load(open("valuer.dump", "rb"))
+t = utils.tokenizer.Tokenizer('samples/search_items_sample.msgpack')
+v = bm25.valuer.Valuer(t)
+# w2v = Word2Vec(t, v._idf)
+# w2v.load('word2vec/')
+# w2v.build_hnsw()
 
 
 @app.route("/")
@@ -19,7 +21,8 @@ def main_page():
 
 @app.route("/search-request", methods=["GET"])
 def get_results():
-    res = v.score(request.args['q'])  # TODO
+    # res = w2v.evaluate(request.args['q'], 10)[0]  # TODO
+    res = v.score(request.args['q'])
 
     answer = []
     for id in res:
