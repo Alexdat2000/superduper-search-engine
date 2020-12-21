@@ -13,6 +13,7 @@ class Word2Vec:
         self._ids = []
         self._idf = idf
         self._tokenizer = tokenizer
+        self._vectors = np.array([])
 
     def build_model(self):
         self._model.build_vocab(self._tokenizer.token_generator(), progress_per=1000)
@@ -60,6 +61,7 @@ class Word2Vec:
         self.train(epochs)
         self._word_to_index = {w: data.index for w, data in self._model.wv.vocab.items()}
         self._index_to_word = {data.index: w for w, data in self._model.wv.vocab.items()}
+        self._vectors = self._model.wv.vectors
         print('preparing hnsw...')
         self.init_document_vectors()
         self.build_hnsw()
@@ -73,15 +75,15 @@ class Word2Vec:
             self._ids.append(document['item_id'])
             if tokens:
                 document_list.append(sum(
-                    self._model.wv.vectors[self._word_to_index[token]] * (self._idf[token] if self._idf.get(token) else 0.01)
+                    self._vectors[self._word_to_index[token]] * (self._idf[token] if self._idf.get(token) else 0.01)
                     if self._word_to_index.get(token) else np.zeros(96) for token in tokens))
             else:
                 document_list.append(np.zeros(96))
         self._document_vectors = np.vstack(document_list)
 
     def save(self, file_path='word2vec/'):
-        with open(file_path + 'model.model', 'wb') as model_file:
-            self._model.save(model_file)
+        with open(file_path + 'vectors', 'wb') as vec_file:
+            pickle.dump(self._vectors, vec_file)
         self._hnsw.save_index(file_path + 'hnsw')
         with open(file_path + 'ids', 'wb') as ids_file:
             pickle.dump(self._ids, ids_file)
@@ -91,8 +93,9 @@ class Word2Vec:
             pickle.dump(self._index_to_word, i2w_file)
 
     def load(self, file_path='word2vec/'):
+        with open(file_path + 'vectors', 'rb') as vec_file:
+            self._vectors = pickle.load(vec_file)
         self.load_knn_index(96, file_path + 'hnsw', 'cosine')
-        self._model = gensim.models.Word2Vec.load(file_path + 'model.model')
         with open(file_path + 'ids', 'rb') as ids_file:
             self._ids = pickle.load(ids_file)
         with open(file_path + 'word_to_index', 'rb') as w2i_file:
@@ -103,7 +106,7 @@ class Word2Vec:
     def evaluate(self, text, k):
         tokens = self._tokenizer.tokenize(text)
         query_vector = sum(
-            self._model.wv.vectors[self._word_to_index[token]] * (self._idf[token] if self._idf.get(token) else 0.01)
+            self._vectors[self._word_to_index[token]] * (self._idf[token] if self._idf.get(token) else 0.01)
             if self._word_to_index.get(token) else np.zeros(96) for token in tokens)
         indices, scores = self._hnsw.knn_query(query_vector, k=k)
         indices = indices.ravel()
