@@ -6,23 +6,32 @@ class Valuer:
     def self_init(self):
         pass
 
-    def __init__(self, tokenizer):
-        self.k1 = 1.6
-        self.b = 0.75
+    def __init__(self, *args):
+        if len(args) == 1:
+            self.k1 = 1.6
+            self.b = 0.75
 
-        self._tokenizer = tokenizer
-        self._vectorizer = CountVectorizer()
-        self._tokenizer.reopen()
-        self._id_by_ind = [doc['item_id'] for doc in self._tokenizer.generator_from_msgpack()]
-        self._tokenizer.reopen()
-        self._corpus = [doc['content'] for doc in self._tokenizer.generator_from_msgpack()]
-        self._corpus_vectors = self._vectorizer.fit_transform(self._corpus)
-        self._document_len = self._corpus_vectors.sum(axis=1)
-        self._avgdl = self._document_len.mean()
-        self._idf = dict()
-        self._N = len(self._corpus)
-        print(len(self._corpus), len(self._id_by_ind))
-        self.fit()
+            self._tokenizer = args[0]
+            self._vectorizer = CountVectorizer()
+            self._tokenizer.reopen()
+            self._id_by_ind = [doc['item_id'] for doc in self._tokenizer.generator_from_msgpack()]
+            self._tokenizer.reopen()
+            self._corpus = [doc['content'] for doc in self._tokenizer.generator_from_msgpack()]
+            self._corpus_vectors = self._vectorizer.fit_transform(self._corpus)
+            self._document_len = self._corpus_vectors.sum(axis=1)
+            self._avgdl = self._document_len.mean()
+            self._idf = dict()
+            self._N = len(self._corpus)
+            print(len(self._corpus), len(self._id_by_ind))
+            self.fit()
+        else:
+            self._tokenizer, self._vectorizer, self._id_by_ind, self._corpus_vectors, \
+            self._document_len, self._avgdl, self._idf, self._N, self.k1, self.b = args
+
+    def __reduce__(self):
+        return (self.__class__, (self._tokenizer, self._vectorizer, self._id_by_ind, self._corpus_vectors,
+                                 self._document_len, self._avgdl, self._idf, self._N, self.k1, self.b)
+                )
 
     def fit(self):
         is_in_text = (self._corpus_vectors > 0).sum(axis=0)

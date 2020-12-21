@@ -10,6 +10,16 @@
         }
     </style>
 </head>
+
+<header>
+    <div class="head">
+        Результаты поиска по запросу
+        <div class="req">
+            {{request}}
+        </div>
+    </div>
+</header>
+
 <div id="results">
     <ol>
         {% for result in results %}
