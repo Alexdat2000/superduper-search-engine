@@ -7,6 +7,8 @@ import utils.tokenizer
 id_to_urls = __import__("pickle").load(open("articles.dump", "rb"))
 
 app = Flask(__name__, subdomain_matching=True)
+v = None
+t = None
 
 
 @app.route("/")
