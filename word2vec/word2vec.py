@@ -5,7 +5,7 @@ import pickle
 
 class Word2Vec:
     def __init__(self, tokenizer, idf):
-        self._model = gensim.models.Word2Vec(size=96, min_count=5, max_vocab_size=1000000)
+        self._model = gensim.models.Word2Vec(size=96, min_count=5, max_vocab_size=100000, workers=4)
         self._hnsw = 0  # how can i specify the type?
         self._document_vectors = np.ndarray(shape=(1, 96))
         self._word_to_index = dict()
@@ -22,8 +22,9 @@ class Word2Vec:
         self._tokenizer.reopen()
         items_count = sum([1 for _ in self._tokenizer.generator_from_msgpack()])
         self._model.train(self._tokenizer.token_generator(epochs),
-                          total_examples=items_count * epochs,
-                          epochs=1, report_delay=10.)
+                          total_examples=items_count,
+                          epochs=epochs, report_delay=10.)
+        self._model.init_sims(replace=True)
 
     def build_hnsw(self):
         self.build_knn_index(self._document_vectors, "hnsw", space='cosine')
