@@ -9,7 +9,7 @@ import pickle
 id_to_urls = __import__("pickle").load(open("articles.dump", "rb"))
 
 app = Flask(__name__, subdomain_matching=True)
-v = pickle.load(open("valuer.dump", "wb"))
+v = pickle.load(open("valuer.dump", "rb"))
 
 
 @app.route("/")
