@@ -15,14 +15,7 @@ def main_page():
 
 @app.route("/search-request", methods=["GET"])
 def get_results():
-    res = v.score(request.args['q'])  # TODO
-
-    answer = []
-    for id in res:
-        if id not in id_to_urls:
-            print(f"Error: id {id} not in pickle")
-        else:
-            answer.append((id, id_to_urls[id][0], id_to_urls[id][1]))
+    res = v.score(request.args['q'])
 
     return render_template(
         "results.html",

@@ -193,7 +193,7 @@ button span:before, button span:after
 {
     position: absolute;
     top: 0;
-    margin-top: -500px;
+    margin-top: -40%;
     background-color: rgba(175, 37, 196, 0.1);
     border-radius: 5px;
     transform: scale(0.6);
