@@ -3,26 +3,29 @@ import hnswlib
 import numpy as np
 import tqdm
 import pickle
-import zipfile
 import requests
+import zipfile
 import io
 
 class Word2Vec:
-    def __init__(self):
+    def __init__(self, tokenizer, idf):
         self._model = gensim.models.Word2Vec(size=96, min_count=5, max_vocab_size=1000000)
         self._hnsw = 0  # how can i specify the type?
         self._document_vectors = np.ndarray(shape=(1, 96))
         self._word_to_index = dict()
         self._index_to_word = dict()
         self._ids = []
+        self._idf = idf
+        self._tokenizer = tokenizer
 
-    def build_model(self, tokenizer):
-        self._model.build_vocab(tokenizer.token_generator(), progress_per=1000)
+    def build_model(self):
+        self._model.build_vocab(self._tokenizer.token_generator(), progress_per=1000)
 
-    def train(self, tokenizer, epochs):
+    def train(self, epochs):
         print("training model ({} epochs)...".format(epochs))
-        items_count = sum([1 for _ in tokenizer.generator_from_msgpack()])
-        self._model.train(tokenizer.token_generator(epochs),
+        self._tokenizer.reopen()
+        items_count = sum([1 for _ in self._tokenizer.generator_from_msgpack()])
+        self._model.train(self._tokenizer.token_generator(epochs),
                           total_examples=items_count * epochs,
                           epochs=1, report_delay=10.)
 
@@ -39,7 +42,7 @@ class Word2Vec:
 
         batch_size = 10000
         data_labels = np.arange(count)
-        for batch_start in tqdm.tqdm_notebook(range(0, count, batch_size)):
+        for batch_start in range(0, count, batch_size):
             self._hnsw.add_items(embeddings[batch_start: batch_start + batch_size, :],
                                  data_labels[batch_start: batch_start + batch_size])
 
@@ -54,27 +57,27 @@ class Word2Vec:
         self._hnsw.load_index(file_path)
         self._hnsw.set_ef(300)
 
-    def build_and_train(self, tokenizer, epochs=1):
+    def build_and_train(self, epochs=1):
         print("building model...")
-        self.build_model(tokenizer)
-        self.train(tokenizer, epochs)
+        self.build_model()
+        self.train(epochs)
         self._word_to_index = {w: data.index for w, data in self._model.wv.vocab.items()}
         self._index_to_word = {data.index: w for w, data in self._model.wv.vocab.items()}
         print('preparing hnsw...')
-        self.init_document_vectors(tokenizer)
+        self.init_document_vectors()
         self.build_hnsw()
         # save_all_data()
 
-    def init_document_vectors(self, tokenizer):
-        tokenizer.reopen()
+    def init_document_vectors(self):
+        self._tokenizer.reopen()
         document_list = []
-        for document in tokenizer.generator_from_msgpack():
-            tokens = tokenizer.tokenize(document['content'])
+        for document in self._tokenizer.generator_from_msgpack():
+            tokens = self._tokenizer.tokenize(document['content'])
             self._ids.append(document['item_id'])
             if tokens:
                 document_list.append(sum(
-                    self._model.wv.vectors[self._word_to_index[token]] if self._word_to_index.get(token) else np.zeros(
-                        96) for token in tokens))
+                    self._model.wv.vectors[self._word_to_index[token]] * (self._idf[token] if self._idf.get(token) else 0.01)
+                    if self._word_to_index.get(token) else np.zeros(96) for token in tokens))
             else:
                 document_list.append(np.zeros(96))
         self._document_vectors = np.vstack(document_list)
@@ -105,11 +108,11 @@ class Word2Vec:
         with folder, zipfile.ZipFile(io.BytesIO(folder.content)) as archive:
             archive.extractall('/')
 
-    def evaluate(self, text, tokenizer, k):
-        tokens = tokenizer.tokenize(text)
+    def evaluate(self, text, k):
+        tokens = self._tokenizer.tokenize(text)
         query_vector = sum(
-            self._model.wv.vectors[self._word_to_index[token]] if self._word_to_index.get(token) else np.zeros(96) for
-            token in tokens)
+            self._model.wv.vectors[self._word_to_index[token]] * (self._idf[token] if self._idf.get(token) else 0.01)
+            if self._word_to_index.get(token) else np.zeros(96) for token in tokens)
         indices, scores = self._hnsw.knn_query(query_vector, k=k)
         indices = indices.ravel()
         scores = scores.ravel()

@@ -42,6 +42,7 @@ class Tokenizer:
     def token_generator(self, epochs=1, print_delta=2000):
         counter1, counter2 = 0, 1
         for epoch in range(epochs):
+            self.reopen()
             for elem in self.generator_from_msgpack():
                 tokens = self.tokenize(elem['content'])
                 counter1 += 1

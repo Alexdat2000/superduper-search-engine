@@ -1,12 +1,23 @@
 from word2vec.word2vec import Word2Vec
 from utils.tokenizer import Tokenizer
+import bm25.valuer
+
+
+def train():
+    word2vec = Word2Vec(tokenizer=t, idf=v._idf)
+    word2vec.build_and_train(4)
+    word2vec.save('word2vec/')
 
 
 def run():
     # test for word2vec
-    tokenizer = Tokenizer(u"samples/search_items_sample.msgpack")
-    word2vec = Word2Vec()
-    #word2vec.build_and_train(tokenizer)
-    model_path = 'https://drive.google.com/file/d/1Gsa99WsmFFMj_RKG14LBzhve-rsva-LE/view?usp=sharing'
-    word2vec.load_from_url(model_path)
-    #print(word2vec.evaluate('котик', tokenizer, 10))
+    word2vec = Word2Vec(tokenizer=t, idf=v._idf)
+    word2vec.load('word2vec')
+    return word2vec.evaluate('котик', 10)
+
+if __name__ == '__main__':
+    global v, t
+    print('test')
+    t = Tokenizer(u'samples/search_items.msgpack')
+    v = bm25.valuer.Valuer(t)
+    train()
