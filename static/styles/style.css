@@ -35,7 +35,7 @@ body
 
 input, button
 {
-    color: #efbcef;
+    color: #f3b3f3;
     font-family: Konstanting, sans-serif;
     padding: 0;
     margin: 0;
@@ -74,7 +74,7 @@ input[type="text"]
 
 input[type="text"]::placeholder
 {
-    color: #c174ab;
+    color: #f3b3f3;
 }
 
 #s-cover
@@ -192,7 +192,7 @@ button span:before, button span:after
 #results
 {
     position: relative;
-    background-color: rgba(143, 21, 190, 0.4);
+    background-color: rgba(176, 69, 207, 0.3);
     border-radius: 5px;
     margin-left: 100px;
     margin-right: 100px;
