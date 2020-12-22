@@ -19,19 +19,23 @@ w2v.load('word2vec/', True)
 def get_and_merge_results(query='котик'):
     res_len, best_len = 100, 10
     w2v_res = w2v.evaluate(query, res_len)
-    # bm25_res = v.score(query)
+    bm25_res = v.score(query)
     id_set = set()
     for x in w2v_res[0]:
         id_set.add(x)
-    # for x in bm25_res:
-    #    id_set.add(x)
+    for x in bm25_res:
+        id_set.add(x)
 
     ids = [x for x in id_set]
     if len(ids) == 0:
         return []
 
     scores = np.array(w2v.get_scores(query, ids))
-    # scores += np.array(v.get_scores(query, ids))
+    bm25_scores = np.array(v.scores(query, ids))
+    max_score = np.max(bm25_res)
+    if max_score != 0:
+        bm25_scores /= max_score
+    scores += bm25_scores
     return [ids[x] for x in np.argsort(scores)[-best_len:]]
 
 
