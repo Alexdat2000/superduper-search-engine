@@ -37,11 +37,11 @@ class Valuer:
             self.fit()
         else:
             self._tokenizer, self._vectorizer, self._id_by_ind, self._corpus_vectors, \
-            self._document_len, self._avgdl, self._idf, self._N, self.k1, self.b = args
+            self._document_len, self._avgdl, self._idf, self._N, self.k1, self.b, self._ind_by_id = args
 
     def __reduce__(self):
         return (self.__class__, (self._tokenizer, self._vectorizer, self._id_by_ind, self._corpus_vectors,
-                                 self._document_len, self._avgdl, self._idf, self._N, self.k1, self.b)
+                                 self._document_len, self._avgdl, self._idf, self._N, self.k1, self.b, self._ind_by_id)
                 )
 
     def fit(self):
