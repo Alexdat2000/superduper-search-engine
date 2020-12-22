@@ -3,6 +3,7 @@ from flask import request, redirect, make_response
 import bm25.valuer
 import utils.tokenizer
 import pickle
+from simple_image_download import simple_image_download
 
 # from word2vec.word2vec import Word2Vec
 
@@ -19,6 +20,10 @@ def main_page():
 
 @app.route("/search-request", methods=["GET"])
 def get_results():
+    response = simple_image_download
+
+    url = response().urls(request.args['q'] + " imagesize:1280x720", 1)[0]
+
     res = v.score(request.args['q'])  # TODO
 
     answer = []
@@ -30,13 +35,15 @@ def get_results():
 
     return render_template(
         "results.html",
+        background=url,
         results=[{
             "title": id_to_urls[i][0],
             "url": "https://zen.yandex.ru" + id_to_urls[i][1],
             "preview": id_to_urls[i][2] + "..."
         }
             for i in res
-        ]
+        ],
+        re=request.args["q"]
     )
 
 
