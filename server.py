@@ -14,9 +14,9 @@ app = Flask(__name__, subdomain_matching=True)
 t = utils.tokenizer.Tokenizer('samples/search_items.msgpack')
 v = pickle.load(open("valuer.dump", "rb"))
 w2v = Word2Vec(t, v._idf)
-w2v.load('word2vec/', False)
+w2v.load('word2vec/', True)
 w2v.build_hnsw()
-w2v.save_hnsw('word2vec/')
+# w2v.save_hnsw('word2vec/')
 
 
 def get_and_merge_results(query='котик'):
