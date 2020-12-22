@@ -35,12 +35,12 @@ body
 
 input, button
 {
-    color: #efbcef;
+    color: #f3b3f3;
     font-family: Konstanting, sans-serif;
     padding: 0;
     margin: 0;
     border: 0;
-    background-color: transparent;
+    background: rgba(37, 17, 53, 0.4);
 }
 
 #cover
@@ -52,7 +52,7 @@ input, button
     width: 1200px;
     padding: 0;
     margin: -83px auto 0 auto;
-    background-color: #b03f99;
+    background-color: #efbcef;
     border-radius: 20px;
     box-shadow: 0 10px 40px #ab4793, 0 0 0 20px #ffffffeb;
     transform: scale(0.6);
@@ -74,7 +74,7 @@ input[type="text"]
 
 input[type="text"]::placeholder
 {
-    color: #c153aa;
+    color: #f3b3f3;
 }
 
 #s-cover
@@ -90,6 +90,7 @@ button
     width: 84px;
     height: 96px;
     cursor: pointer;
+    background-color: transparent;
 }
 
 #s-circle
@@ -183,16 +184,15 @@ button span:before, button span:after
   font-family: Konstanting, sans-serif;
   font-size: 14px;
   text-decoration: none;
-  background-color: #ba41a0;
+  background-color: #c66ead;
   border-radius: 4px;
-  box-shadow: 0 10px 20px -5px rgb(188, 67, 159);
   z-index: 125;
 }
 
 #results
 {
     position: relative;
-    background-color: rgba(175, 37, 196, 0.1);
+    background-color: rgba(176, 69, 207, 0.3);
     border-radius: 5px;
     margin-left: 100px;
     margin-right: 100px;
@@ -212,12 +212,12 @@ button span:before, button span:after
 
 .title {
     margin-left: 3%;
-    font-size: 50px;
+    font-size: 30px;
 }
 
 .preview
 {
-    font-size: 30px;
+    font-size: 15px;
     color: #f3b3f3;
 }
 
@@ -244,4 +244,15 @@ ol {
 #req {
     font-family: Konstanting, sans-serif;
     font-size: 100px;
+}
+
+#head-search {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#middle-search {
+    margin-left: 20px;
+    margin-right: 20px;
+    top: 50%;
 }

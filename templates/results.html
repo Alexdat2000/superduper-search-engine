@@ -6,20 +6,26 @@
     <style>
         body {
             background-attachment: fixed;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("https://picsum.photos/1920/1080");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url({{background}});
         }
     </style>
 </head>
-
-<header>
-    <div class="head">
-        Результаты поиска по запросу
-        <div class="req">
-            {{request}}
+<div id="head-search">
+    <form method="GET" action="/search-request">
+        <div class="tb">
+            <div class="td"><input type="text" placeholder="Поиск" name="q" required value="{{re}}"></div>
+            <div class="td" id="s-cover">
+                <button type="submit">
+                    <div id="s-circle"></div>
+                    <span></span>
+                </button>
+            </div>
         </div>
-    </div>
-</header>
-
+    </form>
+</div>
 <div id="results">
     <ol>
         {% for result in results %}
