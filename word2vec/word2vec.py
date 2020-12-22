@@ -130,6 +130,8 @@ class Word2Vec:
         query_vector = sum(
             self._vectors[self._word_to_index[token]] * (self._idf[token] if self._idf.get(token) else 0.01)
             if self._word_to_index.get(token) else np.zeros(96) for token in tokens)
+        if not np.any(query_vector):
+            return [], []
         indices, scores = self._hnsw.knn_query(query_vector, k=k)
         indices = indices.ravel()
         scores = scores.ravel()
