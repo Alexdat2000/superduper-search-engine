@@ -1,6 +1,8 @@
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 
+TOP_DOCUMENTS = 100
+
 
 class Valuer:
     def self_init(self):
@@ -68,9 +70,9 @@ class Valuer:
             scores += self._idf[token] * tf * (k1 + 1) / (tf + k1 * (1 - b + b * self._document_len[doc_inds] / avgdl))
 
         scores = np.squeeze(np.asarray(scores.ravel().T))
-        best_inds = np.argpartition(scores, -10)[-10:]
-        best_inds = best_inds[np.argsort(scores[best_inds])][::-1]
         if doc_ids is not Ellipsis:
             return scores
         else:
+            best_inds = np.argpartition(scores, -TOP_DOCUMENTS)[-TOP_DOCUMENTS:]
+            best_inds = best_inds[np.argsort(scores[best_inds])][::-1]
             return [self._id_by_ind[i] for i in best_inds]
