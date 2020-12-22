@@ -120,7 +120,7 @@ class Word2Vec:
         query_vector = np.sum(
             self._vectors[self._word_to_index[token]] * (self._idf[token] if self._idf.get(token) else 0.01)
             if self._word_to_index.get(token) else np.zeros(96) for token in tokens)
-        return [self.similarity(self._document_vectors[self._id_to_index[cur_id]], query_vector) for cur_id in q_ids]
+        return [(self.similarity(self._document_vectors[self._id_to_index[cur_id]], query_vector) + 1) / 2 for cur_id in q_ids]
 
     def save_hnsw(self, file_path='word2vec/'):
         self._hnsw.save_index(file_path + 'hnsw')
@@ -134,6 +134,6 @@ class Word2Vec:
             return [], []
         indices, scores = self._hnsw.knn_query(query_vector, k=k)
         indices = indices.ravel()
-        scores = scores.ravel()
+        scores = (scores.ravel() + 1) / 2
         ids = [self._ids[x.astype(int)] for x in indices]
         return ids, scores
