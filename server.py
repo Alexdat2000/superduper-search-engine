@@ -4,16 +4,20 @@ import bm25.valuer
 import utils.tokenizer
 from word2vec.word2vec import Word2Vec
 import numpy as np
+from simple_image_download import simple_image_download
+import pickle
+
 
 id_to_urls = __import__("pickle").load(open("articles.dump", "rb"))
 
 app = Flask(__name__, subdomain_matching=True)
-t = utils.tokenizer.Tokenizer('samples/search_items_sample.msgpack')
-v = bm25.valuer.Valuer(t)
+t = utils.tokenizer.Tokenizer('samples/search_items.msgpack')
+v = pickle.load(open("valuer.dump", "rb"))
 w2v = Word2Vec(t, v._idf)
 w2v.load('word2vec/', False)
 w2v.build_hnsw()
 w2v.save_hnsw('word2vec/')
+
 
 def get_and_merge_results(query='котик'):
     res_len, best_len = 100, 10
@@ -38,17 +42,11 @@ def main_page():
 
 @app.route("/search-request", methods=["GET"])
 def get_results():
-    # res = w2v.evaluate(request.args['q'], 10)[0]  # TODO
-    # res = v.score(request.args['q'])
+    response = simple_image_download
+    url = response().urls(request.args['q'] + " imagesize:1280x720", 1)[0]
+
     res = get_and_merge_results(request.args['q'])
     res.reverse()
-
-    answer = []
-    for id in res:
-        if id not in id_to_urls:
-            print(f"Error: id {id} not in pickle")
-        else:
-            answer.append((id, id_to_urls[id][0], id_to_urls[id][1]))
 
     return render_template(
         "results.html",
