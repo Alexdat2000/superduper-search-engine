@@ -7,7 +7,6 @@ import numpy as np
 from simple_image_download import simple_image_download
 import pickle
 
-
 id_to_urls = __import__("pickle").load(open("articles.dump", "rb"))
 
 app = Flask(__name__, subdomain_matching=True)
@@ -20,11 +19,11 @@ w2v.load('word2vec/', True)
 def get_and_merge_results(query='котик'):
     res_len, best_len = 100, 10
     w2v_res = w2v.evaluate(query, res_len)
-    #bm25_res = v.score(query)
+    # bm25_res = v.score(query)
     id_set = set()
     for x in w2v_res[0]:
         id_set.add(x)
-    #for x in bm25_res:
+    # for x in bm25_res:
     #    id_set.add(x)
 
     ids = [x for x in id_set]
@@ -49,18 +48,24 @@ def get_results():
     res = get_and_merge_results(request.args['q'])
     res.reverse()
 
-    return render_template(
-        "results.html",
-        background=url,
-        results=[{
-            "title": id_to_urls[i][0],
-            "url": "https://zen.yandex.ru" + id_to_urls[i][1],
-            "preview": id_to_urls[i][2] + "..."
-        }
-            for i in res
-        ],
-        re=request.args["q"]
-    )
+    if not res:
+        return render_template("no_res.html",
+                               re=request.args["q"]
+                               )
+
+    else:
+        return render_template(
+            "results.html",
+            background=url,
+            results=[{
+                "title": id_to_urls[i][0],
+                "url": "https://zen.yandex.ru" + id_to_urls[i][1],
+                "preview": id_to_urls[i][2] + "..."
+            }
+                for i in res
+            ],
+            re=request.args["q"]
+        )
 
 
 @app.route('/favicon.ico')
