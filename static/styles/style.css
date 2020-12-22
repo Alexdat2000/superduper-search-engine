@@ -4,37 +4,31 @@
     src: local("Konstanting"), url("../Konstanting.ttf") format("truetype");
 }
 
-*
-{
+* {
     outline: none;
 }
 
-html, body
-{
+html, body {
     height: 100%;
     min-height: 100%;
 }
 
-body
-{
+body {
     margin: 0;
     background-color: #efbcef;
 }
 
-.tb
-{
+.tb {
     display: table;
     width: 100%;
 }
 
-.td
-{
+.td {
     display: table-cell;
     vertical-align: middle;
 }
 
-input, button
-{
+input, button {
     color: #f3b3f3;
     font-family: Konstanting, sans-serif;
     padding: 0;
@@ -43,8 +37,7 @@ input, button
     background: rgba(37, 17, 53, 0.4);
 }
 
-#cover
-{
+#cover {
     position: absolute;
     top: 50%;
     left: 0;
@@ -58,13 +51,11 @@ input, button
     transform: scale(0.6);
 }
 
-form
-{
+form {
     height: 120px;
 }
 
-input[type="text"]
-{
+input[type="text"] {
     width: 100%;
     height: 120px;
     font-size: 100px;
@@ -72,19 +63,16 @@ input[type="text"]
     margin-left: 5px;
 }
 
-input[type="text"]::placeholder
-{
+input[type="text"]::placeholder {
     color: #f3b3f3;
 }
 
-#s-cover
-{
+#s-cover {
     width: 1px;
     padding-left: 35px;
 }
 
-button
-{
+button {
     position: relative;
     display: block;
     width: 84px;
@@ -93,8 +81,7 @@ button
     background-color: transparent;
 }
 
-#s-circle
-{
+#s-circle {
     position: relative;
     top: -8px;
     left: 0;
@@ -108,8 +95,7 @@ button
     transition: 0.5s ease all;
 }
 
-button span
-{
+button span {
     position: absolute;
     top: 68px;
     left: 43px;
@@ -122,8 +108,7 @@ button span
     transition: 0.5s ease all;
 }
 
-button span:before, button span:after
-{
+button span:before, button span:after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -136,8 +121,7 @@ button span:before, button span:after
     transition: 0.5s ease all;
 }
 
-#s-cover:hover #s-circle
-{
+#s-cover:hover #s-circle {
     top: -1px;
     width: 67px;
     height: 15px;
@@ -146,8 +130,7 @@ button span:before, button span:after
     border-radius: 20px;
 }
 
-#s-cover:hover span
-{
+#s-cover:hover span {
     top: 50%;
     left: 56px;
     width: 25px;
@@ -155,42 +138,39 @@ button span:before, button span:after
     transform: rotateZ(0);
 }
 
-#s-cover:hover button span:before
-{
+#s-cover:hover button span:before {
     bottom: 11px;
     transform: rotateZ(52deg);
 }
 
-#s-cover:hover button span:after
-{
+#s-cover:hover button span:after {
     bottom: -11px;
     transform: rotateZ(-52deg);
 }
-#s-cover:hover button span:before, #s-cover:hover button span:after
-{
+
+#s-cover:hover button span:before, #s-cover:hover button span:after {
     right: -6px;
     width: 40px;
     background-color: #fff;
 }
 
 #ytd-url {
-  display: block;
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  padding: 10px 14px;
-  margin: 20px;
-  color: #fff;
-  font-family: Konstanting, sans-serif;
-  font-size: 14px;
-  text-decoration: none;
-  background-color: #c66ead;
-  border-radius: 4px;
-  z-index: 125;
+    display: block;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    padding: 10px 14px;
+    margin: 20px;
+    color: #fff;
+    font-family: Konstanting, sans-serif;
+    font-size: 14px;
+    text-decoration: none;
+    background-color: #c66ead;
+    border-radius: 4px;
+    z-index: 125;
 }
 
-#results
-{
+#results {
     position: relative;
     background-color: rgba(176, 69, 207, 0.3);
     border-radius: 5px;
@@ -200,8 +180,7 @@ button span:before, button span:after
 }
 
 
-#text
-{
+#text {
     width: 100%;
     font-size: 80px;
     line-height: 1;
@@ -215,22 +194,21 @@ button span:before, button span:after
     font-size: 30px;
 }
 
-.preview
-{
+.preview {
     font-size: 15px;
     color: #f3b3f3;
 }
 
 a:link {
-  color: #efd6ef;
-  background-color: transparent;
-  text-decoration: none;
+    color: #efd6ef;
+    background-color: transparent;
+    text-decoration: none;
 }
 
 a:visited {
-  color: #efd6ef;
-  background-color: transparent;
-  text-decoration: none;
+    color: #efd6ef;
+    background-color: transparent;
+    text-decoration: none;
 }
 
 ol {
@@ -255,4 +233,11 @@ ol {
     margin-left: 20px;
     margin-right: 20px;
     top: 50%;
+}
+
+#pic-in-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
 }
