@@ -85,7 +85,7 @@ class Word2Vec:
     def save(self, file_path='word2vec/'):
         with open(file_path + 'vectors', 'wb') as vec_file:
             pickle.dump(self._vectors, vec_file)
-        self._hnsw.save_index(file_path + 'hnsw')
+        self.save_hnsw(file_path)
         with open(file_path + 'ids', 'wb') as ids_file:
             pickle.dump(self._ids, ids_file)
         with open(file_path + 'word_to_index', 'wb') as w2i_file:
@@ -93,10 +93,11 @@ class Word2Vec:
         with open(file_path + 'document_vectors', 'wb') as doc_file:
             pickle.dump(self._document_vectors, doc_file)
 
-    def load(self, file_path='word2vec/'):
+    def load(self, file_path='word2vec/', load_hsnw=False):
         with open(file_path + 'vectors', 'rb') as vec_file:
             self._vectors = pickle.load(vec_file)
-        #self.load_knn_index(96, file_path + 'hnsw', 'cosine')
+        if load_hsnw:
+            self.load_knn_index(96, file_path + 'hnsw', 'cosine')
         with open(file_path + 'ids', 'rb') as ids_file:
             self._ids = pickle.load(ids_file)
         with open(file_path + 'word_to_index', 'rb') as w2i_file:
@@ -105,6 +106,23 @@ class Word2Vec:
             self._document_vectors = pickle.load(doc_file)
         for i in range(len(self._ids)):
             self._id_to_index[self._ids[i]] = i
+
+    def similarity(self, vec1, vec2):
+        len_mult = np.linalg.norm(vec1) * np.linalg.norm(vec2)
+        if len_mult != 0:
+            return np.dot(vec1, vec2) / len_mult
+        else:
+            return -1
+
+    def get_scores(self, query, q_ids):
+        tokens = self._tokenizer.tokenize(query)
+        query_vector = np.sum(
+            self._vectors[self._word_to_index[token]] * (self._idf[token] if self._idf.get(token) else 0.01)
+            if self._word_to_index.get(token) else np.zeros(96) for token in tokens)
+        return [self.similarity(self._document_vectors[self._id_to_index[cur_id]], query_vector) for cur_id in q_ids]
+
+    def save_hnsw(self, file_path='word2vec/'):
+        self._hnsw.save_index(file_path + 'hnsw')
 
     def evaluate(self, text, k):
         tokens = self._tokenizer.tokenize(text)
