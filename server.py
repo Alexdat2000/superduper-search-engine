@@ -13,6 +13,7 @@ v = bm25.valuer.Valuer(t)
 w2v = Word2Vec(t, v._idf)
 w2v.load('word2vec/', False)
 w2v.build_hnsw()
+w2v.save_hnsw('word2vec/')
 
 def get_and_merge_results(query='котик'):
     res_len, best_len = 100, 10
