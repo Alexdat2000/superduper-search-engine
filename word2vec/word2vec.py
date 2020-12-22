@@ -3,6 +3,7 @@ import hnswlib
 import numpy as np
 import pickle
 
+
 class Word2Vec:
     def __init__(self, tokenizer, idf):
         self._model = gensim.models.Word2Vec(size=96, min_count=5, max_vocab_size=100000, workers=4)

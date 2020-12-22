@@ -15,8 +15,6 @@ t = utils.tokenizer.Tokenizer('samples/search_items.msgpack')
 v = pickle.load(open("valuer.dump", "rb"))
 w2v = Word2Vec(t, v._idf)
 w2v.load('word2vec/', True)
-w2v.build_hnsw()
-# w2v.save_hnsw('word2vec/')
 
 
 def get_and_merge_results(query='котик'):
@@ -50,13 +48,15 @@ def get_results():
 
     return render_template(
         "results.html",
+        background=url,
         results=[{
             "title": id_to_urls[i][0],
             "url": "https://zen.yandex.ru" + id_to_urls[i][1],
             "preview": id_to_urls[i][2] + "..."
         }
             for i in res
-        ]
+        ],
+        re=request.args["q"]
     )
 
 
