@@ -31,7 +31,7 @@ def get_and_merge_results(query='котик'):
         return []
 
     scores = np.array(w2v.get_scores(query, ids))
-    bm25_scores = np.array(v.scores(query, ids))
+    bm25_scores = np.array(v.score(query, ids))
     max_score = np.max(bm25_res)
     if max_score != 0:
         bm25_scores /= max_score
