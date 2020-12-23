@@ -37,7 +37,7 @@ def get_and_merge_results(query='котик'):
     if max_score != 0:
         bm25_scores /= max_score
     scores += bm25_scores * 0.15
-    return ids[np.argsort(scores)[-best_len:]]
+    return [ids[x] for x in np.argsort(scores)[-best_len:]]
 
 
 @app.route("/")
