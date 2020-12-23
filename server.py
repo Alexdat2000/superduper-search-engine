@@ -33,11 +33,10 @@ def get_and_merge_results(query='котик'):
 
     scores = np.array(w2v.get_scores(query, ids))
     bm25_scores = np.array(v.score(query, ids))
-    max_score = np.max(bm25_res)
+    max_score = np.max(bm25_scores)
     if max_score != 0:
         bm25_scores /= max_score
-    scores += bm25_scores * 30
-    print(scores[np.argsort(scores)])
+    scores += bm25_scores
     return [ids[x] for x in np.argsort(scores)[-best_len:]]
 
 
