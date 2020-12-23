@@ -21,9 +21,7 @@ def get_and_merge_results(query='котик'):
     res_len, best_len = 100, 10
     w2v_res = w2v.evaluate(query, res_len)
     bm25_res = v.score(query)
-    print(bm25_res)
-    print(w2v_res)
-
+    
     id_set = set()
     for x in w2v_res[0]:
         id_set.add(x)
