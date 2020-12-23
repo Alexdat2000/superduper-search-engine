@@ -36,7 +36,7 @@ def get_and_merge_results(query='котик'):
     max_score = np.max(bm25_scores)
     if max_score != 0:
         bm25_scores /= max_score
-    scores += bm25_scores
+    scores += bm25_scores * 0.15
     return [ids[x] for x in np.argsort(scores)[-best_len:]]
 
 
@@ -52,6 +52,60 @@ def get_results():
 
     res = get_and_merge_results(request.args['q'])
     res.reverse()
+
+    if not res:
+        return render_template("no_res.html",
+                               re=request.args["q"]
+                               )
+
+    else:
+        return render_template(
+            "results.html",
+            background=url,
+            results=[{
+                "title": id_to_urls[i][0],
+                "url": "https://zen.yandex.ru" + id_to_urls[i][1],
+                "preview": id_to_urls[i][2] + "..."
+            }
+                for i in res
+            ],
+            re=request.args["q"]
+        )
+
+
+@app.route("/w2v", methods=["GET"])
+def get_w2v():
+    response = simple_image_download
+    url = response().urls(request.args['q'] + " imagesize:1280x720", 1)[0]
+
+    res = w2v.evaluate(request.args['q'], 10)[0]
+
+    if not res:
+        return render_template("no_res.html",
+                               re=request.args["q"]
+                               )
+
+    else:
+        return render_template(
+            "results.html",
+            background=url,
+            results=[{
+                "title": id_to_urls[i][0],
+                "url": "https://zen.yandex.ru" + id_to_urls[i][1],
+                "preview": id_to_urls[i][2] + "..."
+            }
+                for i in res
+            ],
+            re=request.args["q"]
+        )
+
+
+@app.route("/bm25", methods=["GET"])
+def get_bm25():
+    response = simple_image_download
+    url = response().urls(request.args['q'] + " imagesize:1280x720", 1)[0]
+
+    res = v.score(request.args['q'])[:10]
 
     if not res:
         return render_template("no_res.html",
