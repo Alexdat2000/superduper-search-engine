@@ -241,3 +241,8 @@ ol {
     margin-right: auto;
     width: 40%;
 }
+
+.bottom {
+    position: absolute;
+    bottom: 5px;
+}

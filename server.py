@@ -80,12 +80,4 @@ def favicon():
 
 
 if __name__ == '__main__':
-    # if "LOCAL" not in __import__("os").environ:
-    #     import run_tests
-    #
-    #     run_tests.run()
-
-    # w2v = Word2Vec(t, v._idf)
-    # w2v.load('word2vec/')
-
     app.run()
