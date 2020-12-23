@@ -73,6 +73,8 @@ class Valuer:
         if doc_ids is not Ellipsis:
             return scores
         else:
+            if np.max(scores) == 0.0:
+                return []
             best_inds = np.argpartition(scores, -TOP_DOCUMENTS)[-TOP_DOCUMENTS:]
             best_inds = best_inds[np.argsort(scores[best_inds])][::-1]
             return [self._id_by_ind[i] for i in best_inds]

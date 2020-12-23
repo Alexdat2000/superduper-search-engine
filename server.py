@@ -14,12 +14,16 @@ t = utils.tokenizer.Tokenizer('samples/search_items.msgpack')
 v = pickle.load(open("valuer.dump", "rb"))
 w2v = Word2Vec(t, v._idf)
 w2v.load('word2vec/', True)
+pickle.dump(v, open("valuer.dump", "wb"))
 
 
 def get_and_merge_results(query='котик'):
     res_len, best_len = 100, 10
     w2v_res = w2v.evaluate(query, res_len)
     bm25_res = v.score(query)
+    print(bm25_res)
+    print(w2v_res)
+
     id_set = set()
     for x in w2v_res[0]:
         id_set.add(x)
